@@ -5,7 +5,9 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const config = require('config')
 const { check, validationResult } = require('express-validator');
-const User = require('../../models/User')
+const User = require('../../models/User');
+const auth = require('../../middleware/auth');
+
 
 // route Post users
 // desc Register user
@@ -80,5 +82,70 @@ user = new User({
 }
 
 });
+
+
+// route Put users
+// desc modify existing user
+// access Private
+
+router.put('/', auth,
+async (req, res) => {
+
+// Destructure req.body
+const { name, email, password } = req.body;
+
+try {
+
+// See if user exists
+  let user = await User.findById(req.user.id);
+  if (user) {
+    // Get users gravatar
+    const avatar = gravatar.url(email, {
+      s: '200',
+      r: 'pg',
+      d: 'mm'
+    })
+
+ //Check if user updated password
+
+    if (password) {
+      // Encrpt password
+        const salt = await bcrypt.genSalt(10)
+        let encryptPassword = await bcrypt.hash(password, salt);
+
+      //update user in Database
+      user = await User.findByIdAndUpdate(
+        req.user.id,
+        {
+        name: name,
+        email: email,
+        password: encryptPassword
+        }
+      );
+
+      console.log('user updated with password');
+      res.status(200).send('User updated including password');
+
+    } else {
+      //update user in Database
+      user = await User.findByIdAndUpdate(
+        req.user.id,
+        {
+        name: name,
+        email: email,
+        }
+      );
+
+      console.log('user updated');
+      res.status(200).send('User  updated');
+    }
+    };
+} catch(err) {
+  console.error(err);
+  res.status(500).send('Server error');
+}
+
+});
+
 
 module.exports = router;

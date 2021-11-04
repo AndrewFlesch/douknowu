@@ -59,11 +59,7 @@ router.get('/user/:user_id', async (req, res) => {
 // route POST profile
 // desc  create or edit a profile
 // access Private
-router.post('/', [auth,
-    [
-      check('birth', 'Birth Date is required').not().isEmpty()
-    ]
-  ], async (req, res) => {
+router.post('/', [auth], async (req, res) => {
 
     const errors = validationResult(req);
     if(!errors.isEmpty()) {
@@ -121,10 +117,7 @@ router.delete('/', auth, async (req, res) => {
   try {
     //Remove Profile
     await Profile.findOneAndRemove({ user: req.user.id });
-    //Remove User
-    await Profile.findOneAndRemove({ _id: req.user.id });
-
-    res.json({ msg: 'User and profile deleted '})
+    res.json({ msg: 'Profile deleted '})
 
     } catch(err) {
     console.error(err.message);

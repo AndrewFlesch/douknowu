@@ -1,6 +1,8 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
+
+
 const EntriesSchema = new Schema({
   user: {
     type: Schema.Types.ObjectId,
@@ -10,18 +12,26 @@ const EntriesSchema = new Schema({
     type: String,
     required: true
   },
+  type: {
+    type: String
+  },
+  direction: {
+    type: String
+  },
   start: {
     type: Date,
-    default: Date.now
+    default: null
   },
   end: {
-    type: Date
+    type: Date,
+    default: null
   },
   duration: {
     type: Number,
   },
   description: {
-    type: String
+    type: String,
+    defaul: null
   }
 
 })
