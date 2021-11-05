@@ -1,4 +1,0 @@
-{
-  "mongoURI":"mongodb+srv://DatabaseOwner:Iotdata100@cluster0.wpvuo.mongodb.net/myFirstDatabase?retryWrites=true&w=majority",
-  "jwtSecret":"mysecretoken"
-}
