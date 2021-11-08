@@ -161,6 +161,7 @@ directions.forEach((dir, i) => {
       typeDirectionProperties.push(dir + typ);
   });
 });
+
 console.log(typeDirectionProperties)
   let formData = {};
   typeDirectionProperties.forEach((prop, i) => {

@@ -88,15 +88,6 @@ const Entry = ({ editEntry, setShow, show: {showing, id} , deleteEntry, entry
 
     const onChange = e => setFormData({ ...formData, [e.target.name]: e.target.value})
 
-    const onChangeType = e => {
-      if (e.target.name === 'type') {
-        addOrEditTypeAndDirection(title, direction, e.target.value);
-      } else {
-        addOrEditTypeAndDirection(title, e.target.value, type);
-      }
-            setFormData({ ...formData, [e.target.name]: e.target.value})
-    };
-
 
 
   return (

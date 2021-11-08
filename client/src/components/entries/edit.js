@@ -93,14 +93,14 @@ const Edit = ({ editEntry, deleteEntry, setShow, entry
 
     const onChangeType = e => {
       if (e.target.name === 'type') {
+        console.log(e.target.value);
         addOrEditTypeAndDirection(title, direction, e.target.value);
       } else {
+        console.log(title & type & e.target.value);
         addOrEditTypeAndDirection(title, e.target.value, type);
       }
             setFormData({ ...formData, [e.target.name]: e.target.value})
     };
-
-
 
   return (
     <Fragment>
@@ -110,11 +110,33 @@ const Edit = ({ editEntry, deleteEntry, setShow, entry
                  <input type="text" placeholder="title" name="title" required="" value={title} onChange={e => onChange(e)}/>
                  <small className="form-text">Title of this entry.</small>
                </div>
-               <div className="entryTitle">
-                 <div>{type}</div>
-                 <div>{direction}</div>
-                   <button type='button' onClick={() => setEditCategories(true)} className='btn btn-light my-1' value="True">Edit Type/Direction</button>
-               </div>
+               {title.split(' ').length > 1 ? (
+                 <div className="entryTitle">
+                   <div>{type}</div>
+                   <div>{direction}</div>
+                     <button type='button' onClick={() => setEditCategories(true)} className='btn btn-light my-1' value="True">Edit</button>
+                 </div>
+               ) : (
+                 <div>
+                  <div className="entryTitle">
+                 <select className="entrySelect" id="" name="type" value={type} onChange={e => onChangeType(e)}>
+                   <option value="Emotion">Emotional Feeling</option>
+                   <option value="Physical">Phsyical Feeling</option>
+                   <option value="Action">Action</option>
+                  </select>
+                  <small className="form-text">If the direction is not accurate, please change it.</small>
+                  </div>
+                  <div className="entryTitle">
+                 <select className="entrySelect" id="" name="direction" value={direction} onChange={e => onChangeType(e)}>
+                    <option value="positive">Positive</option>
+                    <option value="negative">Negative</option>
+                    <option value="neutral">Neutral</option>
+                  </select>
+                   <small className="form-text">If the direction is not accurate, please change it.</small>
+                   </div>
+                   </div>
+               )}
+
                <div className="entryTitle">
                  <input type="datetime-local" placeholder="Start date" name="start"  value={formatDateTime(start)} onChange={e => onChange(e)}/>
                  <small className="form-text">Start date and time. Chaning the start time will automatically change the duration.</small>
