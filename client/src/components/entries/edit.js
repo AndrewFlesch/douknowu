@@ -27,6 +27,9 @@ const Edit = ({ editEntry, deleteEntry, setShow, entry
 
   const [editCategories, setEditCategories] = useState(false);
 
+  const [editCategoryForm, setEditCategoryForm] = useState();
+
+
   const [edit, setEdit] = useState(false);
 
   const [durationArray, setDurationArray] = useState([]);
@@ -77,6 +80,8 @@ const Edit = ({ editEntry, deleteEntry, setShow, entry
 
     const onSubmit = async (e) => {
       e.preventDefault();
+      console.log(formData);
+      console.log(editCategoryForm);
       if (end) {
         editEntry(entryid, formData, true);
       } else {
@@ -90,17 +95,23 @@ const Edit = ({ editEntry, deleteEntry, setShow, entry
     }
 
     const onChange = e => setFormData({ ...formData, [e.target.name]: e.target.value})
+    let typeDirChange = {};
 
     const onChangeType = e => {
       if (e.target.name === 'type') {
-        console.log(e.target.value);
-        addOrEditTypeAndDirection(title, direction, e.target.value);
+        checkDirChange(title, direction, e.target.value );
       } else {
-        console.log(title & type & e.target.value);
-        addOrEditTypeAndDirection(title, e.target.value, type);
+        checkDirChange(title, e.target.value, type );
       }
-            setFormData({ ...formData, [e.target.name]: e.target.value})
+      setFormData({ ...formData, [e.target.name]: e.target.value})
     };
+
+    const checkDirChange = async (title, direction, type) => {
+      let typeDirChange = {};
+        typeDirChange = await addOrEditTypeAndDirection(title, direction, type);
+        setEditCategoryForm(typeDirChange)
+      return typeDirChange;
+    }
 
   return (
     <Fragment>

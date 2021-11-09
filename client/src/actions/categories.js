@@ -68,7 +68,7 @@ export const newUserCategory = async (formData) => {
     }
   }
   try {
-    const res = await axios.post(`/api/categories/me`, formData, config);
+    const res = await axios.post(`/api/categories/`, formData, config);
     return res.data;
   } catch (err) {
     console.error(err);

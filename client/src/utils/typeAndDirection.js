@@ -23,6 +23,7 @@ const categories = async () => {
 
 const userCategories = async () => {
   let userCategories = await getMyCategories();
+  console.log(userCategories);
   if (userCategories.length > 0) {
     console.log(userCategories);
     let userCategory = userCategories[0];
@@ -137,16 +138,16 @@ export const addOrEditTypeAndDirection = async (titleSent, direction, type ) => 
   }
   let directions = [];
   switch (direction) {
-    case 'Positive & Negative':
+    case 'positive & negative':
       directions = ['Positive','Negative'];
       break;
-    case 'Positive':
+    case 'positive':
       directions = ['positive'];
       break;
-    case 'Negative':
+    case 'negative':
       directions = ['negative'];
       break;
-      case 'Neutral':
+      case 'neutral':
         directions = ['neutral'];
         break;
     default:
@@ -206,8 +207,7 @@ console.log('formData');
    formData = {
      ...formData,
      [identifyExistingProperty]:finalText
-   }
-    console.log(formData);
-
-  }
+   }}
+   console.log(formData);
+   return formData;
 }

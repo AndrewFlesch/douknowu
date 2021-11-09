@@ -91,9 +91,21 @@ if (neutralPhysical) categoryFields.neutralPhysical = neutralPhysical.toLowerCas
   try {
 
     // create entry
-    categories = new Categories(categoryFields);
-    await categories.save();
-    return res.json(categories);
+    let category = await Categories.findOne({ user: req.user.id });
+    if (category) {
+      //update entry
+      category = await Categories.findOneAndUpdate(
+        {user: req.user.id},
+        {$set: categoryFields},
+        {new: true}
+      );
+
+  return res.json(category);
+} else {
+  let categories = new Categories(categoryFields);
+  await categories.save();
+  return res.json(categories);
+}
 
   } catch(err) {
     console.error(err.message);
