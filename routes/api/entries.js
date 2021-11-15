@@ -137,16 +137,8 @@ router.post('/', [auth,
 // route POST entries
 // desc  Edit an entry
 // access Private
-router.post('/edit/:entry_id', [auth,
-    [
-      check('title', 'Title is required').not().isEmpty()
-    ]
-  ], async (req, res) => {
+router.post('/edit/:entry_id', [auth], async (req, res) => {
 
-    const errors = validationResult(req);
-    if(!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
-    }
 //Destructure body from request
   const { title, type, direction, start, end, duration, description } = req.body;
 

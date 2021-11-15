@@ -10,8 +10,10 @@ const User = require('../../models/User');
 // access Public
 
 function mustNotExist (existing, add) {
+    if (existing === undefined) existing = '';
     let newArray = add.split(',');
     newArray.forEach((newItem, index) => {
+      console.log(newItem);
     if (existing) {
       let trimNewItem = newItem.trim();
       if (existing.includes(trimNewItem) === false) {
@@ -77,16 +79,16 @@ const { positiveEmotions, negativeEmotions, neutralEmotions, positiveAction, neg
 const categoryFields = {};
 //get user from request Token
 categoryFields.user = req.user.id;
-if (positiveEmotions) categoryFields.positiveEmotions = positiveEmotions.toLowerCase();
-if (negativeEmotions) categoryFields.negativeEmotions = negativeEmotions.toLowerCase();
-if (neutralEmotions) categoryFields.neutralEmotions = neutralEmotions.toLowerCase();
-if (positiveAction) categoryFields.positiveAction = positiveAction.toLowerCase();
-if (negativeAction) categoryFields.negativeAction = negativeAction.toLowerCase();
-if (neutralAction) categoryFields.neutralAction = neutralAction.toLowerCase();
-if (positivePhysical) categoryFields.positivePhysical = positivePhysical.toLowerCase();
-if (negativePhysical) categoryFields.negativePhysical = negativePhysical.toLowerCase();
-if (neutralPhysical) categoryFields.neutralPhysical = neutralPhysical.toLowerCase();
-
+if (positiveEmotions !== undefined) categoryFields.positiveEmotions = checkAndAdd(positiveEmotions.toLowerCase());
+if (negativeEmotions !== undefined) categoryFields.negativeEmotions = checkAndAdd(negativeEmotions.toLowerCase());
+if (neutralEmotions !== undefined) categoryFields.neutralEmotions = checkAndAdd(neutralEmotions.toLowerCase());
+if (positiveAction !== undefined)  categoryFields.positiveAction = checkAndAdd(positiveAction.toLowerCase());
+if (negativeAction !== undefined) categoryFields.negativeAction = checkAndAdd(negativeAction.toLowerCase());
+if (neutralAction !== undefined) categoryFields.neutralAction = checkAndAdd(neutralAction.toLowerCase());
+console.log(neutralAction);
+if (positivePhysical !== undefined) categoryFields.positivePhysical = checkAndAdd(positivePhysical.toLowerCase());
+if (negativePhysical !== undefined) categoryFields.negativePhysical = checkAndAdd(negativePhysical.toLowerCase());
+if (neutralPhysical !== undefined) categoryFields.neutralPhysical = checkAndAdd(neutralPhysical.toLowerCase());
 
   try {
 

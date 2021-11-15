@@ -1,23 +1,26 @@
-import React, { Fragment, useState } from 'react';
+import React, { Fragment, useState, useEffect } from 'react';
 import { withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import getDuration from '../../utils/getDuration';
-import Interval from '../../utils/interval';
-import { deleteEntry, editEntry } from '../../actions/entries';
-import {formatDateTime, durationFNS, duraionMinutes, setEndDate, removeSeconds} from '../../utils/formatDate';
-import {addOrEditTypeAndDirection} from '../../utils/typeAndDirection';
-import EditCategories from './editCategories';
+import { deleteEntry, editEntry, setEntry } from '../../actions/entries';
+import {formatDateTime, duraionMinutes, setEndDate, removeSeconds, durationFNS} from '../../utils/formatDate';
+import {addOrEditTypeAndDirection, typeAndDirectionMain} from '../../utils/typeAndDirection';
+import EditTypeDir from './editTypeDir';
 import { setShow } from '../../actions/showHide';
+import { newUserCategory } from '../../actions/categories';
 
 
-const Edit = ({ editEntry, deleteEntry, setShow, entry
+
+
+const Edit = ({ editEntry, setEntry, deleteEntry, setShow, entry, entryState, newUserCategory
 }) => {
+
+  console.log(entryState);
 
   const [formData, setFormData] = useState({
     title: entry.title,
-    type: entry.type,
-    direction: entry.direction,
+    type: entryState.type ? entryState.type : entry.type,
+    direction: entryState.direction ? entryState.direction : entry.direction,
     start: entry.start,
     end: entry.end ? entry.end : '' ,
     duration: entry.duration ? entry.duration : '' ,
@@ -25,13 +28,9 @@ const Edit = ({ editEntry, deleteEntry, setShow, entry
     entryid: entry._id
   });
 
-  const [editCategories, setEditCategories] = useState(false);
-
-  const [editCategoryForm, setEditCategoryForm] = useState();
-
-
-  const [edit, setEdit] = useState(false);
-
+  const [editCategories, setEditCategories] = useState(false)
+  const [titleSend, setTitleSend] = useState([]);
+  const [editCategoryForm, setEditCategoryForm] = useState('No Change');
   const [durationArray, setDurationArray] = useState([]);
 
   const endFormData = {
@@ -55,6 +54,23 @@ const Edit = ({ editEntry, deleteEntry, setShow, entry
    entryid
  } = formData;
 
+ useEffect(() => {
+   setDurationArray(durationFNS(start, true, end));
+ }, [start, end]);
+
+ useEffect(() => {
+     setTitleSend(title.split(" "));
+ }, [title]);
+
+ useEffect(() => {
+   if (entryState) {
+   setFormData({
+     ...formData,
+     type: entryState.type ? entryState.type : entry.type,
+     direction: entryState.direction ? entryState.direction : entry.direction
+   })}
+ }, [entryState]);
+
 
   const endEntry = (entryid, formData) => {
     endFormData.title = title;
@@ -74,28 +90,41 @@ const Edit = ({ editEntry, deleteEntry, setShow, entry
       setFormData({...formData, end: setEndDate(start, durationMin), duration: durationMin});
     }
 
-    const endChange = () => {
-      let durationChange = duraionMinutes(start, end);
-    }
-
     const onSubmit = async (e) => {
       e.preventDefault();
-      console.log(formData);
+      console.log('Edit Category Form');
       console.log(editCategoryForm);
+      if (editCategoryForm !== 'No Change') {
+        await newUserCategory(editCategoryForm);
+        let typeAndDirection = await typeAndDirectionMain(title);
+        console.log('type and direction main');
+        console.log(typeAndDirection);
+        setEntry(typeAndDirection);
+      }
       if (end) {
         editEntry(entryid, formData, true);
       } else {
         editEntry(entryid, formData);
       }
-     setEdit(false)}
+     setShow(false)}
 
-    const setToEdit = e => {
-      setEdit(true);
-      setDurationArray(durationFNS(start, true));
-    }
-
-    const onChange = e => setFormData({ ...formData, [e.target.name]: e.target.value})
-    let typeDirChange = {};
+     const onChange = e => {
+       setFormData({ ...formData, [e.target.name]: e.target.value});
+       if (e.target.name === 'end') {
+         let durArray = [];
+         durArray = durationFNS(start, true, e.target.value);
+         document.querySelector("[name='days']").value = durArray[0];
+         document.querySelector("[name='hours']").value = durArray[1];
+         document.querySelector("[name='minutes']").value = durArray[2];
+       }
+       if (e.target.name === 'start') {
+         let durArray = [];
+         durArray = durationFNS(e.target.value, true, end);
+         document.querySelector("[name='days']").value = durArray[0];
+         document.querySelector("[name='hours']").value = durArray[1];
+         document.querySelector("[name='minutes']").value = durArray[2];
+       }
+ }
 
     const onChangeType = e => {
       if (e.target.name === 'type') {
@@ -109,6 +138,8 @@ const Edit = ({ editEntry, deleteEntry, setShow, entry
     const checkDirChange = async (title, direction, type) => {
       let typeDirChange = {};
         typeDirChange = await addOrEditTypeAndDirection(title, direction, type);
+        console.log('Type Dir change');
+        console.log(typeDirChange);
         setEditCategoryForm(typeDirChange)
       return typeDirChange;
     }
@@ -122,16 +153,42 @@ const Edit = ({ editEntry, deleteEntry, setShow, entry
                  <small className="form-text">Title of this entry.</small>
                </div>
                {title.split(' ').length > 1 ? (
+                 <div>
+              <div className="entryTitle">
+              <small className="form-text">If the direction is not accurate, please change it.</small>
+               <select className="entrySelect" id="" name="type" value={type} onChange={e => onChangeType(e)}>
+                 <option value="No Type">Unknown</option>
+                 <option value="Action & Emotion" disabled>Action with Emotion</option>
+                 <option value="Action & Emotion & Physical" disabled>Action with Emotion & Physical</option>
+                 <option value="Action & Physical" disabled>Action with Physical</option>
+                 <option value="Emotions">Emotional Feeling</option>
+                 <option value="Physical">Phsyical Feeling</option>
+                 <option value="Physical & Emotional" disabled>Physical & Emotional</option>
+                 <option value="Action">Action</option>
+                </select>
+                </div>
+                <div className="entryTitle">
+                   <small className="form-text">If the direction is not accurate, please change it.</small>
+               <select className="entrySelect" id="" name="direction" value={direction} onChange={e => onChangeType(e)}>
+                 <option value="No Direction">Unknown</option>
+                 <option value="positive & negative" disabled>Positive & Negative</option>
+                  <option value="positive">Positive</option>
+                  <option value="negative">Negative</option>
+                  <option value="neutral">Neutral</option>
+                </select>
+                </div>
+
                  <div className="entryTitle">
-                   <div>{type}</div>
-                   <div>{direction}</div>
-                     <button type='button' onClick={() => setEditCategories(true)} className='btn btn-light my-1' value="True">Edit</button>
+                 <small className="form-text">If you want to change the direcitona or type of individual words in this phrase, you can do so by clicking the button below.</small>
+                     <button type='button' onClick={() => setEditCategories(true)} className='btn btn-light my-1' value="True">Edit Individual Words Direction/Type</button>
+                 </div>
                  </div>
                ) : (
                  <div>
                   <div className="entryTitle">
                  <select className="entrySelect" id="" name="type" value={type} onChange={e => onChangeType(e)}>
-                   <option value="Emotion">Emotional Feeling</option>
+                   <option value="No Type">Unknown</option>
+                   <option value="Emotions">Emotional Feeling</option>
                    <option value="Physical">Phsyical Feeling</option>
                    <option value="Action">Action</option>
                   </select>
@@ -139,6 +196,7 @@ const Edit = ({ editEntry, deleteEntry, setShow, entry
                   </div>
                   <div className="entryTitle">
                  <select className="entrySelect" id="" name="direction" value={direction} onChange={e => onChangeType(e)}>
+                    <option value="No Direction">Unknown</option>
                     <option value="positive">Positive</option>
                     <option value="negative">Negative</option>
                     <option value="neutral">Neutral</option>
@@ -157,6 +215,7 @@ const Edit = ({ editEntry, deleteEntry, setShow, entry
                  <small className="form-text">End date and time. Changing the end time will automatically change the duration.</small>
                </div>
                <div className="entryTitle">
+               <input type="hidden" name="duration" value={duration}/>
                  <div className="inline editdash"><input type="number" placeholder={durationArray[0]} name="days" onChange={e => durChange(e)} /> Days </div>
                  <div className="inline editdash"><input type="number" placeholder={durationArray[1]} name="hours" onChange={e => durChange(e)} /> Hours </div>
                   <div className="inline editdash"><input type="number" placeholder={durationArray[2]} name="minutes" onChange={e => durChange(e)} /> Minutes </div>
@@ -174,10 +233,15 @@ const Edit = ({ editEntry, deleteEntry, setShow, entry
                </div>
             </form>
            ) : (
+             //Edi
              <div className="modalDialog modalDialogshow" id="Edit">
               <div>
                    <div parent="moodModal" onClick={() => setEditCategories(false)} title="Close" value={entryid} className="close">X</div>
-                   <EditCategories entry={entry} />
+
+                         {titleSend.map((singleTitle) => (
+                           <EditTypeDir titleSent={singleTitle} key={singleTitle} formDataEdit={formData} />
+                         ))}
+                  <button type='button' className='btn btn-light my-1' onClick={() => setEditCategories(false)} title="Close" value={entryid}>Close</button>
               </div>
             </div>
           )}
@@ -186,12 +250,16 @@ const Edit = ({ editEntry, deleteEntry, setShow, entry
 };
 
 const mapStateToProps = state => ({
-  show: state.showHide
+  show: state.showHide,
+  entryState: state.entries.entry
+
 });
 
 Edit.propTypes = {
   deleteEntry: PropTypes.func.isRequired,
-  editEntry: PropTypes.func.isRequired
+  editEntry: PropTypes.func.isRequired,
+  setEntry: PropTypes.func.isRequired,
+  newUserCategory: PropTypes.func.isRequired
 };
 
-export default connect(mapStateToProps, { deleteEntry, editEntry, setShow } )(withRouter(Edit));
+export default connect(mapStateToProps, { deleteEntry, editEntry, setEntry, setShow, newUserCategory } )(withRouter(Edit));

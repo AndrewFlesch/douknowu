@@ -1,5 +1,4 @@
-import { v4 as uuidv4 } from 'uuid';
-import { SHOW, HIDE } from './types';
+import { SHOW } from './types';
 
 export const setShow = (direction, id) => dispatch => {
   if (direction === true) {

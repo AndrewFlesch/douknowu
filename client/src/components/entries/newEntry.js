@@ -1,7 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { addEntry } from '../../actions/entries';
-import Spinner from '../layout/Spinner';
 import { removeSeconds } from '../../utils/formatDate';
 import {typeAndDirectionMain} from '../../utils/typeAndDirection';
 
@@ -31,7 +30,7 @@ const NewEntry = ({ addEntry }) => {
     onSumbmitFormData.start = removeSeconds(new Date());
     let typeAndDirection = await typeAndDirectionMain(title);
     onSumbmitFormData.type = typeAndDirection.type;
-      onSumbmitFormData.direction = typeAndDirection.direction;
+    onSumbmitFormData.direction = typeAndDirection.direction;
     console.log(onSumbmitFormData);
     addEntry(onSumbmitFormData);
     setFormData({title: ''});

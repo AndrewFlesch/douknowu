@@ -1,16 +1,16 @@
-import React, { Fragment, useState, useEffect } from 'react';
+import React, { Fragment, useState } from 'react';
 import { withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import getDuration from '../../utils/getDuration';
-import Interval from '../../utils/interval';
 import { deleteEntry, editEntry } from '../../actions/entries';
-import {formatDateTime, durationFNS, duraionMinutes, setEndDate, formatDateTimeAll, returnFormatDateTime, removeSeconds} from '../../utils/formatDate';
+import {formatDateTime, durationFNS, duraionMinutes, setEndDate, formatDateTimeAll, removeSeconds} from '../../utils/formatDate';
 
 
 
 const EntryHorizontal = ({ editEntry, deleteEntry, entry
 }) => {
+
+  console.log(entry);
 
   const [formData, setFormData] = useState({
     title: entry.title,

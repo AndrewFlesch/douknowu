@@ -15,6 +15,36 @@
 .allHorizontal {
 }
 
+.typedirchange {
+  width:100%;
+  display:inline-block;
+  border:1px solid gray;
+  padding:5px;
+  margin:10px;
+}
+
+.typedirchange .type {
+  display: inline-block;
+  width:300px;
+  float:left;
+  margin:5px;
+}
+
+.typedirchange .direction {
+  display: inline-block;
+  width:300px;
+  float:left;
+  margin:5px;
+}
+
+.typedirchange .button {
+  display: inline-block;
+  width:100px;
+  float:left;
+  margin-top: 25px;
+  margin-left: 10px;
+}
+
 
 .modalDialog {
 	position: fixed;

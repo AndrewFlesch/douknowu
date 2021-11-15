@@ -14,7 +14,7 @@ date
    setDuration(durationFNS(date));
  }, 60000);
  return () => clearInterval(interval);
-},[]);
+},[date]);
 
   return (
     <Fragment>

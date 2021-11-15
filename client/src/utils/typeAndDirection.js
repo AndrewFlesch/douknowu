@@ -1,4 +1,4 @@
-import { getAllCategories, getMyCategories, newUserCategory, editMyUserCategories } from '../actions/categories';
+import { getAllCategories, getMyCategories } from '../actions/categories';
 
 const categories = async () => {
   let categories = await getAllCategories();
@@ -15,7 +15,6 @@ const categories = async () => {
       negativePhysical: category.negativePhysical,
       neutralPhysical: category.neutralPhysical
     }
-    console.log(categoryObject);
     return categoryObject;
   }
 
@@ -23,9 +22,7 @@ const categories = async () => {
 
 const userCategories = async () => {
   let userCategories = await getMyCategories();
-  console.log(userCategories);
   if (userCategories.length > 0) {
-    console.log(userCategories);
     let userCategory = userCategories[0];
     let userCategoryObject = {
       negativeAction: userCategory.negativeAction,
@@ -38,30 +35,47 @@ const userCategories = async () => {
       negativePhysical: userCategory.negativePhysical,
       neutralPhysical: userCategory.neutralPhysical
     }
-    console.log(userCategoryObject);
     return userCategoryObject;
   }
 }
 
 export const typeAndDirection = (title, typeDirectionData) => {
-    for (const property in typeDirectionData) {
-      console.log(property);
-      if (typeDirectionData[property].includes(title) === true) {
-        return property
+  for (let i=0; typeDirectionData.length>i; i++) {
+    for (const property in typeDirectionData[i]) {
+      if (typeDirectionData[i][property]){
+        if (typeDirectionData[i][property].includes(title) === true) {
+          return property
+        }
       }
     }
+  }
 };
 
 const titleSplit = (title, typeDirectionData) => {
   let allTypesReturned = '';
+  let titleWhole = [];
+  titleWhole.push(title);
+  console.log(titleWhole);
   let titleSplit = title.split(' ');
-  titleSplit.forEach((title, i) => {
+  console.log(titleSplit);
+  let titleAll = titleWhole.concat(titleSplit);
+  console.log(titleAll.length);
+  for (let i = 0; titleAll.length > i; i++) {
+    let title = titleAll[i];
     console.log(title);
+    console.log(i);
     let type = typeAndDirection(title, typeDirectionData);
-    if (type) allTypesReturned += type + ","
-  });
-  console.log(allTypesReturned);
-  if (allTypesReturned) return allTypesReturned;
+    console.log(type);
+    if (type) {
+      allTypesReturned += type + ",";
+      if (i === 0) return allTypesReturned;
+  }}
+
+  if (allTypesReturned) {
+    return allTypesReturned;
+  } else {
+    return null;
+  }
 }
 
 const determineTypeAndDirection = (title, typeDirectionData) => {
@@ -71,14 +85,15 @@ const determineTypeAndDirection = (title, typeDirectionData) => {
     direction: ''
   }
   if (allTypesReturned) {
-  if (allTypesReturned.includes('Emotions') === true && allTypesReturned.includes('Action') === true && allTypesReturned.includes('Physical') === false) typesAndDirectionReturned.type = 'Action with Emotion';
-  if (allTypesReturned.includes('Emotions') === true && allTypesReturned.includes('Action') === true && allTypesReturned.includes('Physical') === true) typesAndDirectionReturned.type = 'Action with Emotion & Physical';
-  if (allTypesReturned.includes('Emotions') === true && allTypesReturned.includes('Action') === false  && allTypesReturned.includes('Physical') === false) typesAndDirectionReturned.type = 'Emotion';
+    console.log(allTypesReturned);
+  if (allTypesReturned.includes('Emotions') === true && allTypesReturned.includes('Action') === true && allTypesReturned.includes('Physical') === false) typesAndDirectionReturned.type = 'Action & Emotion';
+  if (allTypesReturned.includes('Emotions') === true && allTypesReturned.includes('Action') === true && allTypesReturned.includes('Physical') === true) typesAndDirectionReturned.type = 'Action & Emotion & Physical';
+  if (allTypesReturned.includes('Emotions') === true && allTypesReturned.includes('Action') === false  && allTypesReturned.includes('Physical') === false) typesAndDirectionReturned.type = 'Emotions';
   if (allTypesReturned.includes('Emotions') === false && allTypesReturned.includes('Action') === true && allTypesReturned.includes('Physical') === false) typesAndDirectionReturned.type = 'Action';
   if (allTypesReturned.includes('Emotions') === false && allTypesReturned.includes('Action') === false && allTypesReturned.includes('Physical') === true) typesAndDirectionReturned.type = 'Physical';
-  if (allTypesReturned.includes('Emotions') === false && allTypesReturned.includes('Action') === true && allTypesReturned.includes('Physical') === true) typesAndDirectionReturned.type = 'Action with Physical';
-    if (allTypesReturned.includes('Emotions') === true && allTypesReturned.includes('Action') === false && allTypesReturned.includes('Physical') === true) typesAndDirectionReturned.type = 'Physical & Emotional';
-  if (allTypesReturned.includes('positive') === true && allTypesReturned.includes('negative') === true) typesAndDirectionReturned.direction = 'Positive & Negative';
+  if (allTypesReturned.includes('Emotions') === false && allTypesReturned.includes('Action') === true && allTypesReturned.includes('Physical') === true) typesAndDirectionReturned.type = 'Action & Physical';
+  if (allTypesReturned.includes('Emotions') === true && allTypesReturned.includes('Action') === false && allTypesReturned.includes('Physical') === true) typesAndDirectionReturned.type = 'Physical & Emotional';
+  if (allTypesReturned.includes('positive') === true && allTypesReturned.includes('negative') === true) typesAndDirectionReturned.direction = 'positive & negative';
   if (allTypesReturned.includes('positive') === true && allTypesReturned.includes('negative') === false) typesAndDirectionReturned.direction = 'positive';
   if (allTypesReturned.includes('positive') === false && allTypesReturned.includes('negative') === true) typesAndDirectionReturned.direction = 'negative';
   if (allTypesReturned.includes('positive') === false && allTypesReturned.includes('negative') === false) typesAndDirectionReturned.direction = 'neutral';
@@ -89,20 +104,28 @@ const determineTypeAndDirection = (title, typeDirectionData) => {
   return typesAndDirectionReturned;
 }
 
+//Checks to see what is the type and direction on create and when an entry is edited
 export const typeAndDirectionMain = async (titleSent) => {
   let title = titleSent.toLowerCase();
-  let typeDirectionData = await userCategories();
+  //Get custom categories
+  let typeDirectionDataCustom = await userCategories();
+  //Get main categories
+  let typeDirectionDataMain = await categories();
+  //Pus categories into an array.
+  let typeDirectionData = [];
+  if (typeDirectionDataCustom) {
+    typeDirectionData.push(typeDirectionDataCustom);
+    typeDirectionData.push(typeDirectionDataMain);
+  } else {
+    typeDirectionData.push(typeDirectionDataMain);
+  }
+
+  console.log(typeDirectionData)
+
   let type = {};
   if (typeDirectionData){
     type = determineTypeAndDirection(title, typeDirectionData);
-  }
-  if (type.type === 'No Type' || Object.keys(type).length === 0) {
-    let typeDirectionData = await categories();
-      type = determineTypeAndDirection(title, typeDirectionData);
-      if (type.type === 'No Type' ) {
-        type.type = "Action";
-        type.direction = "Neutral";
-      }
+    console.log(type);
   }
         return type;
 }
@@ -111,23 +134,14 @@ export const addOrEditTypeAndDirection = async (titleSent, direction, type ) => 
   let title = titleSent.toLowerCase();
   let types = [];
   switch (type) {
-    case 'Action with Emotion':
-      types = ['Action','Emotion'];
+    case 'No Type':
+      types = ['No Type'];
       break;
-    case 'Action with Emotion & Physical':
-      types = ['Action','Emotion', 'Physical'];
-      break;
-    case 'Action with Physical':
-      types = ['Action','Physical'];
-      break;
-    case 'Emotion':
-      types = ['Emotion'];
+    case 'Emotions':
+      types = ['Emotions'];
       break;
     case 'Physical':
       types = ['Physical'];
-      break;
-    case 'Physical & Emotional':
-      types = ['Physical','Emotion'];
       break;
     case 'Action':
       types = ['Action'];
@@ -138,8 +152,8 @@ export const addOrEditTypeAndDirection = async (titleSent, direction, type ) => 
   }
   let directions = [];
   switch (direction) {
-    case 'positive & negative':
-      directions = ['Positive','Negative'];
+    case 'No Direction':
+      directions = ['No Direction'];
       break;
     case 'positive':
       directions = ['positive'];
@@ -151,49 +165,54 @@ export const addOrEditTypeAndDirection = async (titleSent, direction, type ) => 
         directions = ['neutral'];
         break;
     default:
-      directions = ['Neutral'];
+      directions = ['neutral'];
       console.error('Issue with dertmining direction');
   }
 
-  let typeDirectionProperties = [];
-
-directions.forEach((dir, i) => {
-    types.forEach((typ, i) => {
-      typeDirectionProperties.push(dir + typ);
-  });
-});
-
-console.log(typeDirectionProperties)
+  let property = directions + types;
   let formData = {};
-  typeDirectionProperties.forEach((prop, i) => {
-    let property = prop;
-    console.log(property);
+
     formData = {
       ...formData,
       [property] : title
     };
-  });
-
-console.log('formData');
-  console.log(formData);
-  let typeDirectionData = await userCategories();
-  console.log(typeDirectionData);
+  //Get users custom types and directions
+  let typeDirectionDataCustom = await userCategories();
+  let typeDirectionData = typeDirectionDataCustom;
+  let typeDirectionDataArray = [];
+  typeDirectionDataArray.push(typeDirectionDataCustom);
   let existingType = {};
+  //check if user has unique tyCpes and direction
   if (typeDirectionData){
-    existingType = determineTypeAndDirection(title, typeDirectionData);
-    console.log(existingType);
+    existingType = determineTypeAndDirection(title, typeDirectionDataArray);
+    //Check if existing titles exist in that property and add them together.
+    let existingTitles = typeDirectionData[property];
+    if (existingTitles) {
+      if (existingTitles.includes(title) !== true) {
+      let newTitles = existingTitles + ',' + formData[property];
+      formData = {
+        ...formData,
+        [property] : newTitles
+      }
+    } else {
+      return "No Change"
+    }};
   }
-  if (existingType.type === 'No Type' || Object.keys(existingType).length === 0) {
-    console.log('No type or empty object')
+  //check if the title matches one of the custom types or directions.
+  if (existingType.type === 'No Type' || Object.keys(existingType).length === 0 || existingType.type.includes('&') || existingType.direction.includes('&') ) {
+    console.log('No type or empty object or existing type and direction')
   }
+  //Finding and removing existing custom type or direction
  else {
    let identifyExistingProperty = existingType.direction + existingType.type;
    console.log(identifyExistingProperty);
+   if (identifyExistingProperty !== property) {
    let currentText = typeDirectionData[identifyExistingProperty];
+   console.log(currentText);
    let removeText = currentText.replace(title, '');
+   console.log(removeText);
    let removeCommas = removeText.replace(',,',',');
    let lastChar = removeCommas[removeCommas.length - 1];
-   console.log(lastChar);
    let finalText = '';
    if (removeCommas.charAt(0) === ',') {
      finalText = removeCommas.substring(1);
@@ -202,12 +221,11 @@ console.log('formData');
    } else {
      finalText = removeCommas;
    }
-   console.log(existingType);
-   console.log(finalText);
    formData = {
      ...formData,
      [identifyExistingProperty]:finalText
    }}
-   console.log(formData);
-   return formData;
+}
+return formData;
+
 }

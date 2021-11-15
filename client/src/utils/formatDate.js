@@ -49,14 +49,17 @@ return durationString;
 }
 
 export const duraionMinutes = (startDate, endDate) => {
+  console.log(endDate);
   let start = parseISO(startDate);
   let end = '';
   if (endDate) {
     end = parseISO(endDate);
+    console.log(end);
   } else {
     end = new Date();
   }
   let durMin = differenceInMinutes(end, start);
+  console.log(durMin);
   return durMin;
 }
 

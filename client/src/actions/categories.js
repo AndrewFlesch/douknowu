@@ -1,5 +1,4 @@
 import axios from 'axios';
-import { setAlert } from './alert';
 
 import {
 GET_CATEGORIES,
@@ -61,7 +60,7 @@ export const editMyUserCategories = (category_id, formData) => async dispatch =>
 
 
 
-export const newUserCategory = async (formData) => {
+export const newUserCategory = (formData) => async dispatch => {
   const config = {
     headers: {
       'Content-Type': 'application/json'
@@ -69,6 +68,7 @@ export const newUserCategory = async (formData) => {
   }
   try {
     const res = await axios.post(`/api/categories/`, formData, config);
+    console.log(res.data);
     return res.data;
   } catch (err) {
     console.error(err);

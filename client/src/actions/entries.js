@@ -9,9 +9,18 @@ GET_RECENT_ENTRIES,
 GET_ENTRY_ERROR,
 ADD_ENTRY_ERROR,
 DELETE_ENTRY,
+SET_ENTRY,
 ENTRY_ERROR }
 from './types';
 
+//Add entry to stat
+export const setEntry = (data) => dispatch => {
+  console.log(data);
+    dispatch({
+      type: SET_ENTRY,
+      payload: data
+    });
+  };
 
 //Get current open entries for loggdin user
 export const getRecentEntries = (limit) => async dispatch => {
@@ -47,7 +56,7 @@ export const getAllEntries = (limit) => async dispatch => {
   }
 };
 
-
+//Add entry
 export const addEntry = formData => async dispatch => {
   const config = {
     headers: {

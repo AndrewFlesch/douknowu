@@ -26,4 +26,4 @@ export const EDIT_ENTRY_SUCCESS = 'EDIT_ENTRY_SUCCESS';
 export const GET_CATEGORIES = 'GET_CATEGORIES';
 export const GET_CATEGORIES_ERROR = 'GET_CATEGORIES_ERROR';
 export const SHOW = 'SHOW';
-export const HIDE = 'HIDE';
+export const SET_ENTRY = 'SET_ENTRY';

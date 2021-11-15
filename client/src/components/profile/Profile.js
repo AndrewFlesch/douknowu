@@ -3,7 +3,7 @@ import { Link, withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { createProfile, getCurrentProfile, deleteProfile} from '../../actions/profile';
-import {formatDate, formatDateTime} from '../../utils/formatDate';
+import {formatDate} from '../../utils/formatDate';
 import { changeUserConfirm } from '../../actions/auth';
 
 
@@ -99,7 +99,7 @@ const Profile = ({
       area: loading || !profile.area ? '' : profile.area,
       jobtitle: loading || !profile.jobtitle ? '' : profile.jobtitle
     })};
-  }, [loading, getCurrentProfile]);
+  }, [loading, getCurrentProfile, profile ]);
 
 
 

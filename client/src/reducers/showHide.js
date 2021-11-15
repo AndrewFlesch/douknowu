@@ -1,4 +1,4 @@
-import { SHOW, HIDE } from '../actions/types';
+import { SHOW } from '../actions/types';
 
 const initialState = '';
 
@@ -7,9 +7,6 @@ export default function alertSwitch(state = initialState, action){
 
   switch(type) {
     case SHOW:
-      return payload;
-
-    case HIDE:
       return payload;
 
     default:
